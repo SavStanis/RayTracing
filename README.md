@@ -1,1 +1,1 @@
-# BitmapImageResizer
+# Ray Tracing
