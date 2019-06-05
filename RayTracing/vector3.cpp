@@ -44,3 +44,8 @@ void vector3::showVector()
 {
 	std::cout << "\n( " << X << " , " << Y << " , " << Z << " )\n";
 }
+
+vector3 vector3::operator *(float l)
+{
+	return vector3(this->X * l, this->Y * l, this->Z * l);
+}

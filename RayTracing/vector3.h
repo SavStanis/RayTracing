@@ -12,6 +12,7 @@ public:
 
 	vector3 norm();
 	vector3 operator +(vector3 right);
+	vector3 operator *(float l);
 	vector3 operator -(vector3 right);
 	
 	vector3 crossProduct(vector3 right);
