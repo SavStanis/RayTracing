@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{D81FE2EC-E135-4EB1-90C1-1341F274022D}</ProjectGuid>
-    <RootNamespace>RayTrecing</RootNamespace>
+    <ProjectGuid>{C067A378-D6D4-47AF-AD34-8502E7283841}</ProjectGuid>
+    <RootNamespace>RayTracing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -115,15 +115,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BMPWriter.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="vector3.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="BMPStructures.h" />
     <ClInclude Include="BMPWriter.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="vector3.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BMPWriter.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

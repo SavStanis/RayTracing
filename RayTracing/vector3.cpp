@@ -1,6 +1,6 @@
 #include "vector3.h"
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 
 vector3::vector3(float x, float y, float z)
@@ -48,4 +48,9 @@ void vector3::showVector()
 vector3 vector3::operator *(float l)
 {
 	return vector3(this->X * l, this->Y * l, this->Z * l);
+}
+
+float vector3::acosV(vector3 second)
+{
+	return acos(this->dotProduct(second) / (this->length() * second.length()));
 }

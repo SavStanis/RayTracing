@@ -4,21 +4,21 @@
 #pragma pack(2)
 typedef struct BMPHEAD
 {
-	int8_t id[2];          
-	int32_t filesize;      
-	int16_t reserved[2];     
-	int32_t headersize;      
-	int32_t infoSize;        
-	int32_t width;           
-	int32_t depth;           
-	int16_t biPlanes;        
-	int16_t bits;            
-	int32_t biCompression;   
-	int32_t biSizeImage;     
-	int32_t biXPelsPerMeter; 
-	int32_t biYPelsPerMeter; 
-	int32_t biClrUsed;       
-	int32_t biClrImportant;  
+	int8_t id[2] = {'B', 'M'};
+	int32_t filesize = 0;      
+	int16_t reserved[2] = { 0, 0 };
+	int32_t headersize = 54L;      
+	int32_t infoSize = 40L;        
+	int32_t width = 0;           
+	int32_t depth = 0;           
+	int16_t biPlanes = 1;        
+	int16_t bits = 24;            
+	int32_t biCompression = 0L;   
+	int32_t biSizeImage = 0L;     
+	int32_t biXPelsPerMeter = 0L; 
+	int32_t biYPelsPerMeter = 0L; 
+	int32_t biClrUsed = 0L;       
+	int32_t biClrImportant = 0L;  
 };
 
 typedef struct PIXELDATA 

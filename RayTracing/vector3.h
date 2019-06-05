@@ -17,5 +17,8 @@ public:
 	
 	vector3 crossProduct(vector3 right);
 	float dotProduct(vector3 right);
+
+	//acos betweet vectors
+	float acosV(vector3 second);
 };
 
