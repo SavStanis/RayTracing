@@ -1,5 +1,4 @@
 #include "RayTracer.h"
-#include <cmath>
 
 RayTracer::RayTracer()
 {
@@ -27,23 +26,33 @@ image* RayTracer::imageMaker(int hight, int width)
 	return resultImage;
 }
 
-void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, int hight, int width, float fieldOfView)
+void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView)
 {
 
 	const double PI = 3.141592653589793238463;
 
 	image* resultImage = imageMaker(hight, width);
 
-	//camera is always directed on (x, 0, z) 
+	//camera is always directed on (0, 0, -z) 
 	vector3 cameraP = cameraPos;
 	vector3 cameraD = cameraDir.norm();
 
 	vector3 centerOfScreen = cameraP + cameraD;
 	
-	vector3 normXZ(0, 1, 0);
-	vector3 normYZ(1, 0, 0);
+	std::vector<Triangle> Triangles;
 
-	Triangle triangleToDraw(vector3(0, 0, 0), vector3(-2, 1, 0), vector3(1, 1, 0));
+	Triangle triangleToDraw(vector3(0, 0, 0), vector3(1, 1, 1), vector3(1, -1, 1));
+	Triangles.push_back(triangleToDraw);
+	Triangle triangleToDraw1(vector3(0, 0, 0), vector3(1, 1, 1), vector3(-1, 1, 1));
+	Triangles.push_back(triangleToDraw1);
+	Triangle triangleToDraw2(vector3(0, 0, 0), vector3(1, -1, 1), vector3(-1, -1, 1));
+	Triangles.push_back(triangleToDraw2);
+	Triangle triangleToDraw3(vector3(-1, -1, 1), vector3(-1, 1, 1), vector3(0, 0, 0));
+	Triangles.push_back(triangleToDraw3);
+	Triangle triangleToDraw4(vector3(1, 1, 1), vector3(1, -1, 1), vector3(-1, -1, 1));
+	Triangles.push_back(triangleToDraw4);
+	Triangle triangleToDraw5(vector3(1, 1, 1), vector3(-1, 1, 1), vector3(-1, -1, 1));
+	Triangles.push_back(triangleToDraw5);
 
 	float fovInRad = fieldOfView / (float)180 * PI;
 
@@ -51,37 +60,58 @@ void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, int hight, in
 	{
 		for (int y = 0; y < hight; y++)
 		{
-			float yNorm = -(y - hight / 2) / (float)hight;
-			float widthNorm = (x - width / 2) / (float)width;
-			float realPlaneHeight = (float)(1 * tan(fovInRad));
-			float realPlaneWidth = (float)width * realPlaneHeight / (float)hight;
+			vector3 rayDirection = rayDirectionFinder(hight, width, cameraD, cameraP, centerOfScreen, x, y, fovInRad);
+			float minDist = INFINITY;
+			bool isTrigReal = false;
+			Triangle minTrig = Triangles[0];
 
-			//angle between Ox and cameraD
-			float angle = cameraD.acosV(normYZ);
-
-			float normZ = widthNorm * cos(angle);
-			float realPlaneZ = realPlaneWidth * cos(angle);
-
-			float normX = widthNorm * sin(angle);
-			float realPlaneX = realPlaneWidth * sin(angle);
-
-			vector3 XYZVector(normX * realPlaneX / 2, yNorm * realPlaneHeight / 2, normZ * realPlaneZ / 2);
-
-			vector3 positionOnPlane = centerOfScreen + XYZVector;
-
-			vector3 rayDirection = positionOnPlane - cameraP;
-
-			if (ThereIsIntersectionBetweenRayAndTriangle(cameraP, rayDirection, triangleToDraw))
+			for (Triangle i : Triangles)
 			{
-				resultImage->pixelMatrix[x][y].blueComponent = 0;
-				resultImage->pixelMatrix[x][y].greenComponent = 0;
-				resultImage->pixelMatrix[x][y].redComponent = 150;
+				if (ThereIsIntersectionBetweenRayAndTriangle(cameraP, rayDirection, i))
+				{
+					isTrigReal = true;
+					float distance = vector3::distance(cameraP, i.center);
+					if (distance < minDist)
+					{
+						minTrig = i;
+						minDist = distance;
+					}
+				}
 			}
-			else
+
+			if (isTrigReal)
 			{
-				resultImage->pixelMatrix[x][y].blueComponent = 0;
-				resultImage->pixelMatrix[x][y].greenComponent = 150;
-				resultImage->pixelMatrix[x][y].redComponent = 0;
+				vector3 shadowRay = lightPos - minTrig.center;
+				bool isShadow = false;
+				for (Triangle i : Triangles)
+				{
+					if (ThereIsIntersectionBetweenRayAndTriangle(lightPos, shadowRay, i))
+					{
+						float distance = vector3::distance(lightPos, i.center);
+						if (distance < minDist && !(i == minTrig))
+						{
+							isShadow = true;
+							break;
+						}
+					}
+				}
+				vector3 normTriangle = minTrig.nVectorFinder();
+				float angle = normTriangle.acosV(shadowRay);
+
+				if (angle > PI / 2)
+					angle = PI - angle;
+				if (isShadow)
+				{
+					resultImage->pixelMatrix[y][x].redComponent = 125 - 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].greenComponent = 125 - 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].blueComponent = 125 - 150 * cos(angle);
+				}
+				else
+				{
+					resultImage->pixelMatrix[y][x].redComponent = 125 + 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].greenComponent = 125 + 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].blueComponent = 125 + 150 * cos(angle);
+				}
 			}
 		}
 	}
@@ -123,4 +153,32 @@ bool RayTracer::ThereIsIntersectionBetweenRayAndTriangle(vector3 rayOrigin, vect
 	// At this stage we can compute t to find out where the intersection point is on the line.
 	float t = f * edge2.dotProduct(q);
 	return t > EPSILON;
+}
+
+vector3 RayTracer::rayDirectionFinder(int hight, int width, vector3 cameraD, vector3 cameraP, vector3 centerOfScreen, int x, int y, float fovInRad)
+{
+	const double PI = 3.141592653589793238463;
+
+	float yNorm = - (y - hight / 2) / (float)hight;
+	float xNorm = (x - width / 2) / (float)width;
+	float realPlaneHeight = (float)(1 * tan(fovInRad));
+	float realPlaneWidth = (float)width * realPlaneHeight / (float)hight;
+
+	//vector3 normYZ(1, 0, 0);
+
+	////angle between Ox and cameraD
+	//float angle = cameraD.acosV(normYZ);
+	//if (angle > PI / 2)
+	//	angle = PI - angle;
+
+	//float normZ = widthNorm * cos(angle);
+	//float realPlaneZ = realPlaneWidth * cos(angle);
+
+	//float normX = widthNorm * sin(angle);
+	//float realPlaneX = realPlaneWidth * sin(angle);
+
+	vector3 XYZVector(xNorm * realPlaneWidth / 2, yNorm * realPlaneHeight / 2, 0);
+
+	vector3 positionOnPlane = centerOfScreen + XYZVector;
+	return positionOnPlane - cameraP;
 }

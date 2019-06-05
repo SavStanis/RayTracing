@@ -23,7 +23,7 @@ typedef struct BMPHEAD
 
 typedef struct PIXELDATA 
 {
-	int8_t blueComponent;
-	int8_t greenComponent;
-	int8_t redComponent;
-} ;
+	int8_t redComponent = 50;
+	int8_t greenComponent = 50;
+	int8_t blueComponent = 50;
+};

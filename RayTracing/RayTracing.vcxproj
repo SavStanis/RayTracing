@@ -118,6 +118,7 @@
     <ClInclude Include="BMPStructures.h" />
     <ClInclude Include="BMPWriter.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="objReader.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="vector3.h" />
@@ -125,7 +126,9 @@
   <ItemGroup>
     <ClCompile Include="BMPWriter.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="objReader.cpp" />
     <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

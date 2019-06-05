@@ -54,3 +54,16 @@ float vector3::acosV(vector3 second)
 {
 	return acos(this->dotProduct(second) / (this->length() * second.length()));
 }
+
+float vector3::distance(vector3 right, vector3 left)
+{
+	return (left - right).length();
+}
+
+bool vector3::operator==(vector3 right)
+{
+	if (this->X == right.X && this->Y == right.Y && this->Z == right.Z)
+		return true;
+	else
+		return false;
+}
