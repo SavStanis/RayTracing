@@ -43,6 +43,7 @@ void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, int hight, in
 	vector3 normXZ(0, 1, 0);
 	vector3 normYZ(1, 0, 0);
 
+	Triangle triangleToDraw(vector3(0, 0, 0), vector3(-2, 1, 0), vector3(1, 1, 0));
 
 	float fovInRad = fieldOfView / (float)180 * PI;
 
@@ -69,7 +70,57 @@ void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, int hight, in
 			vector3 positionOnPlane = centerOfScreen + XYZVector;
 
 			vector3 rayDirection = positionOnPlane - cameraP;
+
+			if (ThereIsIntersectionBetweenRayAndTriangle(cameraP, rayDirection, triangleToDraw))
+			{
+				resultImage->pixelMatrix[x][y].blueComponent = 0;
+				resultImage->pixelMatrix[x][y].greenComponent = 0;
+				resultImage->pixelMatrix[x][y].redComponent = 150;
+			}
+			else
+			{
+				resultImage->pixelMatrix[x][y].blueComponent = 0;
+				resultImage->pixelMatrix[x][y].greenComponent = 150;
+				resultImage->pixelMatrix[x][y].redComponent = 0;
+			}
 		}
 	}
 
+	BMPWriter::writeBMPFile("Output.bmp", resultImage);
+}
+
+
+bool RayTracer::ThereIsIntersectionBetweenRayAndTriangle(vector3 rayOrigin, vector3 rayVector, Triangle inTriangle)
+{
+	vector3 vertex0 = inTriangle.a;
+	vector3 vertex1 = inTriangle.b;
+	vector3 vertex2 = inTriangle.c;
+	vector3 edge1 = vertex1 - vertex0;
+	vector3 edge2 = vertex2 - vertex0;
+	vector3 h = rayVector.crossProduct(edge2);
+
+	float a = edge1.dotProduct(h);
+	float EPSILON = 1e-5f;
+	
+	if (a > -EPSILON && a < EPSILON)
+	{
+		return false;
+	}
+	float f = 1 / a;
+	vector3 s = rayOrigin - vertex0;
+	float u = f * s.dotProduct(h);
+	if (u < 0.0 || u > 1.0)
+	{
+		return false;
+	}
+	vector3 q = s.crossProduct(edge1);
+	float v = f * rayVector.dotProduct(q);
+	if (v < 0.0 || u + v > 1.0)
+	{
+		return false;
+	}
+
+	// At this stage we can compute t to find out where the intersection point is on the line.
+	float t = f * edge2.dotProduct(q);
+	return t > EPSILON;
 }
