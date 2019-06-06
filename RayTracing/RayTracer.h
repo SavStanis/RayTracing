@@ -16,6 +16,6 @@ public:
 	RayTracer();
 	~RayTracer();
 
-	static void renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView = 80);
+	static void renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView = 100);
 };
 

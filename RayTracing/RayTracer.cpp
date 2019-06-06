@@ -33,7 +33,7 @@ void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 light
 
 	image* resultImage = imageMaker(hight, width);
 
-	//camera is always directed on (0, 0, -z) 
+	//camera is always directed on (0, 0, z) from (0, 0, -z) 
 	vector3 cameraP = cameraPos;
 	vector3 cameraD = cameraDir.norm();
 
@@ -160,24 +160,24 @@ vector3 RayTracer::rayDirectionFinder(int hight, int width, vector3 cameraD, vec
 	const double PI = 3.141592653589793238463;
 
 	float yNorm = - (y - hight / 2) / (float)hight;
-	float xNorm = (x - width / 2) / (float)width;
+	float widthNorm = (x - width / 2) / (float)width;
 	float realPlaneHeight = (float)(1 * tan(fovInRad));
 	float realPlaneWidth = (float)width * realPlaneHeight / (float)hight;
 
-	//vector3 normYZ(1, 0, 0);
+	vector3 normYZ(1, 0, 0);
 
-	////angle between Ox and cameraD
-	//float angle = cameraD.acosV(normYZ);
-	//if (angle > PI / 2)
-	//	angle = PI - angle;
+	//angle between Ox and cameraD
+	float angle = cameraD.acosV(normYZ);
+	if (angle > PI / 2)
+		angle = PI - angle;
 
-	//float normZ = widthNorm * cos(angle);
-	//float realPlaneZ = realPlaneWidth * cos(angle);
+	float normZ = widthNorm * cos(angle);
+	float realPlaneZ = realPlaneWidth * cos(angle);
 
-	//float normX = widthNorm * sin(angle);
-	//float realPlaneX = realPlaneWidth * sin(angle);
+	float normX = widthNorm * sin(angle);
+	float realPlaneX = realPlaneWidth * sin(angle);
 
-	vector3 XYZVector(xNorm * realPlaneWidth / 2, yNorm * realPlaneHeight / 2, 0);
+	vector3 XYZVector(normX * realPlaneX / 2, yNorm * realPlaneHeight / 2, normZ * realPlaneZ / 2);
 
 	vector3 positionOnPlane = centerOfScreen + XYZVector;
 	return positionOnPlane - cameraP;
