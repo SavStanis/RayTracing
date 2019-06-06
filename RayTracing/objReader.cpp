@@ -11,7 +11,7 @@ objReader::~objReader()
 {
 }
 
-std::vector<Triangle> objReader::reader(const char* pathToFile)
+std::vector<Triangle> objReader::reader(const char* pathToFile, float &max)
 {
 	std::fstream input(pathToFile);
 	std::vector<vector3> vertex;
@@ -29,8 +29,11 @@ std::vector<Triangle> objReader::reader(const char* pathToFile)
 		if (tmp == "v")
 		{
 			input >> x;
+			if (abs(x) > max)	max = abs(x);
 			input >> y;
+			if (abs(y) > max)	max = abs(y);
 			input >> z;
+			if (abs(z) > max)	max = abs(z);
 			vertex.push_back(vector3(x, y, z));
 		}
 		if (tmp == "f")

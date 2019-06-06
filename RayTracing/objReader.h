@@ -11,6 +11,6 @@ class objReader
 public:
 	objReader();
 	~objReader();
-	static std::vector<Triangle> reader(const char* pathToFile);
+	static std::vector<Triangle> reader(const char* pathToFile, float &max);
 };
 

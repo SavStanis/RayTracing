@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include "objReader.h"
+#include "octree.h"
 
 class RayTracer
 {

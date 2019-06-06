@@ -117,16 +117,22 @@
   <ItemGroup>
     <ClInclude Include="BMPStructures.h" />
     <ClInclude Include="BMPWriter.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="objReader.h" />
+    <ClInclude Include="octNode.h" />
+    <ClInclude Include="octree.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BMPWriter.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objReader.cpp" />
+    <ClCompile Include="octNode.cpp" />
+    <ClCompile Include="octree.cpp" />
     <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="vector3.cpp" />

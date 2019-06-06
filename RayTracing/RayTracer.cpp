@@ -39,7 +39,12 @@ void RayTracer::renderMethod(const char* pathToFile, vector3 cameraPos, vector3 
 
 	vector3 centerOfScreen = cameraP + cameraD;
 	
-	std::vector<Triangle> Triangles = objReader::reader(pathToFile);
+	//max value of x or y or z 
+	float max = 0;
+
+	std::vector<Triangle> Triangles = objReader::reader(pathToFile, max);
+
+	octree tmpTree(max, Triangles);
 
 	float fovInRad = fieldOfView / (float)180 * PI;
 

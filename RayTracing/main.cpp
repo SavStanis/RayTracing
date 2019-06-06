@@ -16,7 +16,7 @@ int main()
 	//vector3 light(-2, -1, -4);
 	//b.showVector();
 
-	RayTracer::renderMethod("file.obj", a, b, light, 400, 400, 100);
+	RayTracer::renderMethod("gomer.obj", a, b, light, 400, 400, 100);
 	system("pause");
 	return 0;
 }
