@@ -5,6 +5,7 @@
 #include "BMPWriter.h"
 #include <vector>
 #include <cmath>
+#include "objReader.h"
 
 class RayTracer
 {
@@ -16,6 +17,6 @@ public:
 	RayTracer();
 	~RayTracer();
 
-	static void renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView = 100);
+	static void renderMethod(const char* pathToFile, vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView = 90);
 };
 

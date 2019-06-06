@@ -4,13 +4,19 @@
 
 int main()
 {
-	vector3 a(0, 0, -2);
+	vector3 a(0, 0, -3);
 	a.showVector();
 	vector3 b(0, 0, 1);
 	vector3 light(-2, -1, -4);
-
 	b.showVector();
-	RayTracer::renderMethod(a, b, light, 1000, 1000);
+
+	//vector3 a(-5, 2, -2);
+	//a.showVector();
+	//vector3 b(1, 0, 0);
+	//vector3 light(-2, -1, -4);
+	//b.showVector();
+
+	RayTracer::renderMethod("file.obj", a, b, light, 400, 400, 100);
 	system("pause");
 	return 0;
 }

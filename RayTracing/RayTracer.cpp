@@ -26,33 +26,20 @@ image* RayTracer::imageMaker(int hight, int width)
 	return resultImage;
 }
 
-void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView)
+void RayTracer::renderMethod(const char* pathToFile, vector3 cameraPos, vector3 cameraDir, vector3 lightPos, int hight, int width, float fieldOfView)
 {
 
 	const double PI = 3.141592653589793238463;
 
 	image* resultImage = imageMaker(hight, width);
 
-	//camera is always directed on (0, 0, z) from (0, 0, -z) 
+	//camera is always directed on (x, 0, z) from (-x, 0, -z) 
 	vector3 cameraP = cameraPos;
 	vector3 cameraD = cameraDir.norm();
 
 	vector3 centerOfScreen = cameraP + cameraD;
 	
-	std::vector<Triangle> Triangles;
-
-	Triangle triangleToDraw(vector3(0, 0, 0), vector3(1, 1, 1), vector3(1, -1, 1));
-	Triangles.push_back(triangleToDraw);
-	Triangle triangleToDraw1(vector3(0, 0, 0), vector3(1, 1, 1), vector3(-1, 1, 1));
-	Triangles.push_back(triangleToDraw1);
-	Triangle triangleToDraw2(vector3(0, 0, 0), vector3(1, -1, 1), vector3(-1, -1, 1));
-	Triangles.push_back(triangleToDraw2);
-	Triangle triangleToDraw3(vector3(-1, -1, 1), vector3(-1, 1, 1), vector3(0, 0, 0));
-	Triangles.push_back(triangleToDraw3);
-	Triangle triangleToDraw4(vector3(1, 1, 1), vector3(1, -1, 1), vector3(-1, -1, 1));
-	Triangles.push_back(triangleToDraw4);
-	Triangle triangleToDraw5(vector3(1, 1, 1), vector3(-1, 1, 1), vector3(-1, -1, 1));
-	Triangles.push_back(triangleToDraw5);
+	std::vector<Triangle> Triangles = objReader::reader(pathToFile);
 
 	float fovInRad = fieldOfView / (float)180 * PI;
 
@@ -102,15 +89,15 @@ void RayTracer::renderMethod(vector3 cameraPos, vector3 cameraDir, vector3 light
 					angle = PI - angle;
 				if (isShadow)
 				{
-					resultImage->pixelMatrix[y][x].redComponent = 125 - 150 * cos(angle);
-					resultImage->pixelMatrix[y][x].greenComponent = 125 - 150 * cos(angle);
-					resultImage->pixelMatrix[y][x].blueComponent = 125 - 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].redComponent = 125 - 100 * cos(angle);
+					resultImage->pixelMatrix[y][x].greenComponent = 125 - 100 * cos(angle);
+					resultImage->pixelMatrix[y][x].blueComponent = 125 - 100 * cos(angle);
 				}
 				else
 				{
-					resultImage->pixelMatrix[y][x].redComponent = 125 + 150 * cos(angle);
-					resultImage->pixelMatrix[y][x].greenComponent = 125 + 150 * cos(angle);
-					resultImage->pixelMatrix[y][x].blueComponent = 125 + 150 * cos(angle);
+					resultImage->pixelMatrix[y][x].redComponent = 125 + 100 * cos(angle);
+					resultImage->pixelMatrix[y][x].greenComponent = 125 + 100 * cos(angle);
+					resultImage->pixelMatrix[y][x].blueComponent = 125 + 100 * cos(angle);
 				}
 			}
 		}
