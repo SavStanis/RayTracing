@@ -30,7 +30,7 @@ void octNode::rebuild(float min)
 	minZnew = (spaceCube.x1.Z + spaceCube.x5.Z)*0.5;
 	maxZnew = spaceCube.x1.Z;
 
-	if (triangles.size() < 100 || (maxXnew - minXnew) < min)
+	if (triangles.size() < 10 || (maxXnew - minXnew) < min)
 		return;
 
 	doughterNodes[0] = new octNode(minXnew, maxXnew, minYnew, maxYnew, minZnew, maxZnew);
@@ -55,8 +55,8 @@ void octNode::rebuild(float min)
 
 	minXnew = (spaceCube.x3.X + spaceCube.x4.X)*0.5;
 	maxXnew = spaceCube.x4.X;
-	maxYnew = (spaceCube.x1.Y + spaceCube.x4.Y)*0.5;
-	minYnew = spaceCube.x4.Y;
+	maxYnew = (spaceCube.x2.Y + spaceCube.x3.Y)*0.5;
+	minYnew = spaceCube.x3.Y;
 	minZnew = (spaceCube.x1.Z + spaceCube.x5.Z)*0.5;
 	maxZnew = spaceCube.x1.Z;
 
@@ -93,63 +93,80 @@ void octNode::rebuild(float min)
 
 	minXnew = (spaceCube.x3.X + spaceCube.x4.X)*0.5;
 	maxXnew = spaceCube.x4.X;
-	maxYnew = (spaceCube.x1.Y + spaceCube.x4.Y)*0.5;
-	minYnew = spaceCube.x4.Y;
+	maxYnew = (spaceCube.x2.Y + spaceCube.x3.Y)*0.5;
+	minYnew = spaceCube.x3.Y;
 	maxZnew = (spaceCube.x1.Z + spaceCube.x5.Z)*0.5;
 	minZnew = spaceCube.x5.Z;
 
 	doughterNodes[7] = new octNode(minXnew, maxXnew, minYnew, maxYnew, minZnew, maxZnew);
 
-	std::vector<Triangle> newVectors;
-
 	while(!triangles.empty())
 	{
-		int counter1 = -1;
-		int counter2 = -1;
-		int counter3 = -1;
-
 		Triangle i = triangles.back();
 		triangles.pop_back();
-		
-		counter1 = positionFinder(i.a, center);
-		counter2 = positionFinder(i.b, center);
-		counter3 = positionFinder(i.c, center);
-
-		if (counter1 == counter2 && counter2 == counter3)
-			doughterNodes[counter1]->triangles.push_back(i);
+		if (i.center.Z > center.Z)
+		{
+			if (i.center.Y > center.Y)
+			{
+				if (i.center.X > center.X)
+					doughterNodes[0]->triangles.push_back(i);
+				else
+					doughterNodes[1]->triangles.push_back(i);
+			}
+			else
+			{
+				if (i.center.X > center.X)
+					doughterNodes[3]->triangles.push_back(i);
+				else
+					doughterNodes[2]->triangles.push_back(i);
+			}
+		}
 		else
-			newVectors.push_back(i);
+		{
+			if (i.center.Y > center.Y)
+			{
+				if (i.center.X > center.X)
+					doughterNodes[4]->triangles.push_back(i);
+				else
+					doughterNodes[5]->triangles.push_back(i);
+			}
+			else
+			{
+				if (i.center.X > center.X)
+					doughterNodes[7]->triangles.push_back(i);
+				else
+					doughterNodes[6]->triangles.push_back(i);
+			}
+		}
 	}
-
-	triangles = newVectors;
-
 	list = false;
 
-	doughterNodes[0]->list = true;
-	doughterNodes[0]->rebuild(min);
-	doughterNodes[1]->list = true;
-	doughterNodes[1]->rebuild(min);
-	doughterNodes[2]->list = true;
-	doughterNodes[2]->rebuild(min);
-	doughterNodes[3]->list = true;
-	doughterNodes[3]->rebuild(min);
-	doughterNodes[4]->list = true;
-	doughterNodes[4]->rebuild(min);
-	doughterNodes[5]->list = true;
-	doughterNodes[5]->rebuild(min);
-	doughterNodes[6]->list = true;
-	doughterNodes[6]->rebuild(min);
-	doughterNodes[7]->list = true;
-	doughterNodes[7]->rebuild(min);
+	//doughterNodes[0]->list = true;
+	//doughterNodes[0]->rebuild(min);
+	//doughterNodes[1]->list = true;
+	//doughterNodes[1]->rebuild(min);
+	//doughterNodes[2]->list = true;
+	//doughterNodes[2]->rebuild(min);
+	//doughterNodes[3]->list = true;
+	//doughterNodes[3]->rebuild(min);
+	//doughterNodes[4]->list = true;
+	//doughterNodes[4]->rebuild(min);
+	//doughterNodes[5]->list = true;
+	//doughterNodes[5]->rebuild(min);
+	//doughterNodes[6]->list = true;
+	//doughterNodes[6]->rebuild(min);
+	//doughterNodes[7]->list = true;
+	//doughterNodes[7]->rebuild(min);
 }
 
 void octNode::findIntesections(vector3 rayOrigin, vector3 rayVector, std::vector<Triangle> &result)
 {
-
-	for (Triangle i : triangles)
-		result.push_back(i);
 	if (list)
+	{
+		for (Triangle i : triangles)
+			result.push_back(i);
 		return;
+	}
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -159,42 +176,4 @@ void octNode::findIntesections(vector3 rayOrigin, vector3 rayVector, std::vector
 		}
 	}
 
-}
-
-int octNode::positionFinder(vector3 x, vector3 center)
-{
-	if (x.Z > center.Z)
-	{
-		if (x.Y > center.Y)
-		{
-			if (x.X > center.X)
-				return 0;
-			else
-				return 1;
-		}
-		else
-		{
-			if (x.X > center.X)
-				return 3;
-			else
-				return 2;
-		}
-	}
-	else
-	{
-		if (x.Y > center.Y)
-		{
-			if (x.X > center.X)
-				return 4;
-			else
-				return 5;
-		}
-		else
-		{
-			if (x.X > center.X)
-				return 7;
-			else
-				return 6;
-		}
-	}
 }

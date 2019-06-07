@@ -7,10 +7,12 @@
 
 class objReader
 {
-	static int findFirstField(std::string s);
+	static std::string findFirstField(std::string s);
 public:
 	objReader();
 	~objReader();
 	static std::vector<Triangle> reader(const char* pathToFile, float &max);
+
+	static bool isNumber(std::string s);
 };
 

@@ -47,6 +47,9 @@ void RayTracer::renderMethod(const char* pathToFile, vector3 cameraPos, vector3 
 	octree tmpTree(max, Triangles);
 
 	float fovInRad = fieldOfView / (float)180 * PI;
+	if (fovInRad < PI / 2)
+		fovInRad = PI - fovInRad;
+
 
 	for(int x = 0; x < width; x++)
 	{
@@ -57,7 +60,10 @@ void RayTracer::renderMethod(const char* pathToFile, vector3 cameraPos, vector3 
 			bool isTrigReal = false;
 			Triangle minTrig = Triangles[0];
 
-			for (Triangle i : Triangles)
+			std::vector<Triangle> tmpTriangles;
+			tmpTree.findIntersections(cameraP, rayDirection, tmpTriangles);
+
+			for (Triangle i : tmpTriangles)
 			{
 				if (ThereIsIntersectionBetweenRayAndTriangle(cameraP, rayDirection, i))
 				{
@@ -75,7 +81,9 @@ void RayTracer::renderMethod(const char* pathToFile, vector3 cameraPos, vector3 
 			{
 				vector3 shadowRay = lightPos - minTrig.center;
 				bool isShadow = false;
-				for (Triangle i : Triangles)
+				tmpTree.findIntersections(lightPos, shadowRay, tmpTriangles);
+
+				for (Triangle i : tmpTriangles)
 				{
 					if (ThereIsIntersectionBetweenRayAndTriangle(lightPos, shadowRay, i))
 					{

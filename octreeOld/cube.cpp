@@ -68,10 +68,10 @@ bool cube::ThereIsIntersectionBetweenRayAndTriangle(vector3 rayOrigin, vector3 r
 
 bool cube::IntersectionBetweetRayAndCube(vector3 rayOrigin, vector3 rayVector)
 {
+	bool isIntersection = false;
 	for (Triangle i : sides)
 	{
-		if (ThereIsIntersectionBetweenRayAndTriangle(rayOrigin, rayVector, i))
-			return true;
+		isIntersection = ThereIsIntersectionBetweenRayAndTriangle(rayOrigin, rayVector, i);
 	}
-	return false;
+	return isIntersection;
 }

@@ -18,14 +18,15 @@ std::vector<Triangle> objReader::reader(const char* pathToFile, float &max)
 	vertex.push_back(vector3(0, 0, 0));
 		
 	float x, y, z;  //tmp vars for vertexes
-	std::string is, js, ks;
-	int i, j, k;	//tmp vars for polygons
+	std::string is, js, ks, gs;
+	std::string i, j, k, g;	//tmp vars for polygons
 	std::vector<Triangle> Triangles;
 
 	std::string tmp;
+	input >> tmp;
 	while (!input.eof())
 	{
-		input >> tmp;
+		gs = "null";
 		if (tmp == "v")
 		{
 			input >> x;
@@ -41,16 +42,38 @@ std::vector<Triangle> objReader::reader(const char* pathToFile, float &max)
 			input >> is;
 			input >> js;
 			input >> ks;
+			if (!input.eof())
+			{
+				input >> gs;
+				g = findFirstField(gs);
+			}
 			i = findFirstField(is);
 			j = findFirstField(js);
 			k = findFirstField(ks);
-			Triangles.push_back(Triangle(vertex[i], vertex[j], vertex[k]));
+
+
+			if (!isNumber(g) && gs != "null")
+			{
+				Triangles.push_back(Triangle(vertex[std::stoi(i)], vertex[std::stoi(j)], vertex[std::stoi(k)]));
+				tmp = gs;
+			}
+			else
+			{
+				Triangles.push_back(Triangle(vertex[std::stoi(i)], vertex[std::stoi(j)], vertex[std::stoi(k)]));
+				Triangles.push_back(Triangle(vertex[std::stoi(i)], vertex[std::stoi(g)], vertex[std::stoi(k)]));
+				if (!input.eof())
+					input >> tmp;
+			}
+		}
+		else
+		{
+			input >> tmp;
 		}
 	}
 	return Triangles;
 }
 
-int objReader::findFirstField(std::string s)
+std::string objReader::findFirstField(std::string s)
 {
 	std::string tmp = s;
 	int counter = 0;
@@ -63,5 +86,15 @@ int objReader::findFirstField(std::string s)
 		}
 		counter++;
 	}
-	return std::stoi(tmp);
+	return tmp;
+}
+
+bool objReader::isNumber(std::string s)
+{
+	for (char i : s)
+	{
+		if (!isdigit(i))
+			return false;
+	}
+	return true;
 }

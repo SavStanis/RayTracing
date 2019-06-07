@@ -14,6 +14,5 @@ public:
 	octNode(float minX, float maxX, float minY, float maxY, float minZ, float maxZ);
 	void rebuild(float min);
 	void findIntesections(vector3 rayOrigin, vector3 rayVector, std::vector<Triangle> &result);
-	int positionFinder(vector3 x, vector3 center);
 };
 
